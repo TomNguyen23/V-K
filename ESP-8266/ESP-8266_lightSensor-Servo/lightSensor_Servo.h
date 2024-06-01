@@ -48,7 +48,7 @@ const char MAIN_page[] PROGMEM = R"=====(
       <div id="motor_controller">
         <p>Điều khuyển động cơ Servo</p>
         Degrees: <input class="degrees-input" type="text" id="degrees" value="">
-        <a href="" class="btn" onclick="sendValue()">Send</a>
+        <button class="btn" onclick="sendValue()">Send</button>
       </div>
 
     <script>

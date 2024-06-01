@@ -74,7 +74,7 @@ void executeTasks() {
 void BuzzerOn() {
   for (int x = 0; x < 180; x++) {
     sinVal = (sin(x * 3.1415 / 180));
-    toneVal = 2000 + (int(sinVal * 1000));
+    toneVal = 2000 + (int(sinVal * 1000));   
     tone(BUZZER, toneVal);
     delay(2);
   }
