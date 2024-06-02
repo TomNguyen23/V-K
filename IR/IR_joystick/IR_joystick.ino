@@ -13,7 +13,7 @@ void setup() {
 }
 
 void loop() {
-    int x, y, sw;
+  int x, y, sw;
   x = analogRead(Joystick_x);
   y = analogRead(Joystick_y);
   sw = digitalRead(Joystick_sw);
@@ -27,11 +27,17 @@ void loop() {
   
   unsigned long tData;
 
-  if(distance >= 10 && distance <= 20) {
+  if (x > 1000) {
+    tData = 0x0;
+  }
+  if (x < 100) {
     tData = 0x1;
   }
-  else {
-    tData = 0x0;
+  if (y > 1000) {
+    tData = 0x3;
+  }
+  if (y < 100) {
+    tData = 0x4;
   }
 
   irsend.sendRC5(tData, 16);

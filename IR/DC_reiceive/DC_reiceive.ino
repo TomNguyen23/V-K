@@ -18,6 +18,30 @@ void setup() {
   printActiveIRProtocols(&Serial);
 }
 
+void DCmove_forward() {
+  analogWrite(ENA, maxSpeed);
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+}
+
+void DCmove_backward() {
+  analogWrite(ENA, maxSpeed);
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+}
+
+void DCspeedUp() {
+  for (int i = 10; i <= maxSpeed; i += step) {
+    analogWrite(ENA, i);
+  }
+}
+
+void DCspeedDown() {
+  for (int i = maxSpeed; i >= 10; i -= step) {
+    analogWrite(ENA, i);
+  }
+}
+
 void loop() {
   if (IrReceiver.decode()) {
     if (IrReceiver.decodedIRData.protocol == UNKNOWN) {
@@ -26,19 +50,21 @@ void loop() {
       IrReceiver.printIRResultShort(&Serial);
       IrReceiver.printIRSendUsage(&Serial);
       if (IrReceiver.decodedIRData.command == 0x0) {
-        analogWrite(ENA, maxSpeed);
-        digitalWrite(IN1, HIGH);
-        digitalWrite(IN2, LOW);
+        DCmove_forward();
       } 
       else if (IrReceiver.decodedIRData.command == 0x1) {
-        analogWrite(ENA, maxSpeed);
-        digitalWrite(IN1, LOW);
-        digitalWrite(IN2, HIGH);
+        DCmove_backward();
       }
       else if (IrReceiver.decodedIRData.command == 0x2) {
         analogWrite(ENA, maxSpeed);
         digitalWrite(IN1, LOW);
         digitalWrite(IN2, LOW);
+      }
+      else if (IrReceiver.decodedIRData.command == 0x3) {
+        DCspeedUp();
+      }
+      else if (IrReceiver.decodedIRData.command == 0x4) {
+        DCspeedDown();
       }
     }
     IrReceiver.resume();
