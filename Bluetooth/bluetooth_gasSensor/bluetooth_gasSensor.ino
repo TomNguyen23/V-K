@@ -12,7 +12,7 @@ void setup() {
 void loop() {
   int val = analogRead(PINO_SGAS);
   Serial.println(val, DEC);
-  delay(500);
+  delay(1000);
 
   if (val >= 300) {
     BTSerial.write("1");

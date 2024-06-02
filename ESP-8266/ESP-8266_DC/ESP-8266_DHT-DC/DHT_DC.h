@@ -41,8 +41,8 @@ const char MAIN_page[] PROGMEM = R"=====(
         <button class="btn btn-forward" onclick="goForward()">Tới</button>
         <button class="btn btn-backward" onclick="goBackward()">Lui</button> <br>
 
-        <!-- <button class="btn btn-speedup" onclick="goSpeedUp()">Tăng tốc</button>
-        <button class="btn btn-speeddown" onclick="goSpeedDown()">Giảm tốc</button> <br> -->
+        <button class="btn btn-speedup" onclick="goSpeedUp()">Tăng tốc</button>
+        <button class="btn btn-speeddown" onclick="goSpeedDown()">Giảm tốc</button> <br>
       </div>
 
     <script>

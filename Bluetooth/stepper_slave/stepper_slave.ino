@@ -5,10 +5,13 @@ SoftwareSerial BTSerial(10, 11); // (Rx, Tx)
 const int stepPerRevolution = 2048;
 Stepper myStepper(stepPerRevolution, 3, 5, 4, 6);
 
+unsigned long lastStepTime = 0;
+const unsigned long stepInterval = 300; // Adjust as necessary
+int stepAmount = 0;
+
 void setup() {
   myStepper.setSpeed(16);
   Serial.begin(9600);
-
   BTSerial.begin(9600);
 }
 
@@ -23,15 +26,17 @@ void loop() {
     Serial.println(data);
 
     if (data == '1') {
-      myStepper.step(degreeToSteps(60));
+      stepAmount = degreeToSteps(60);
+    } else if (data == '0') {
+      stepAmount = -degreeToSteps(60);
+    } else if (data == '2') {
+      stepAmount = degreeToSteps(180);
     }
-    else if (data == '0') {
-      myStepper.step(-degreeToSteps(120));
-    }
-    else if (data == '2') {
-      myStepper.step(degreeToSteps(180));
-    }
-    delay(500);
+  }
 
+  if (stepAmount != 0 && millis() - lastStepTime >= stepInterval) {
+    myStepper.step(stepAmount);
+    lastStepTime = millis();
+    stepAmount = 0;
   }
 }

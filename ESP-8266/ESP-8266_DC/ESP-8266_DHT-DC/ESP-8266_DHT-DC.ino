@@ -9,15 +9,15 @@ const int DHTPIN = D5;
 const int DHTTYPE = DHT11;
 DHT dht(DHTPIN, DHTTYPE);
 
-#define maxSpeed  255
-#define minSpeed  0
+const int maxSpeed = 255;
+#define minSpeed 0
 int step = 10;
 int ENA = D1;
 int IN1 = D2;
 int IN2 = D3;
 
-#define TENWIFI "Huu Chin"
-#define PASSWIFI "9999@9999"
+#define TENWIFI "Khong Co Nha"
+#define PASSWIFI "7777@9999"
 
 void connection() {
   String s = MAIN_page;
@@ -97,14 +97,16 @@ void DCmove_backward() {
 }
 
 void DCspeedUp() {
-  for (int i = 10; i <= maxSpeed; i += step) {
+  for (int i = 0; i <= maxSpeed; i += step) {
     analogWrite(ENA, i);
+    delay(50);
   }
 }
 
 void DCspeedDown() {
-  for (int i = maxSpeed; i >= 10; i -= step) {
+  for (int i = maxSpeed; i >= 0; i -= step) {
     analogWrite(ENA, i);
+    delay(50);
   }
 }
 // ----------------------------------------------
