@@ -72,7 +72,12 @@ const char MAIN_page[] PROGMEM = R"=====(
     <button class='btn-status'>TẮT ĐÈN</button>
 
     <script>
+      let canSendRequest = true;
+
       setInterval(function() {
+        if (!canSendRequest) {
+          return;
+        }
         var DHT11Value = document.getElementById('DHT11Value');
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
@@ -82,9 +87,12 @@ const char MAIN_page[] PROGMEM = R"=====(
         };
         xhttp.open('GET', '/readDHT11', true);
         xhttp.send();
-      }, 4000); 
+      }, 2000); 
 
       setInterval(function() {
+        if (!canSendRequest) {
+          return;
+        }
         var lightStatus = document.getElementById('lightStatus');
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
@@ -94,7 +102,7 @@ const char MAIN_page[] PROGMEM = R"=====(
         };
         xhttp.open('GET', '/readLight', true);
         xhttp.send();
-      }, 5000);
+      }, 2000);
 
 
       // function sendValue() { 
@@ -110,9 +118,15 @@ const char MAIN_page[] PROGMEM = R"=====(
         var degreesInput = document.getElementById('degrees'); 
         var xhttp2 = new XMLHttpRequest(); 
         var degrees = degreesInput.value; 
+        canSendRequest = false;
         xhttp2.open('POST', '/sendValue', true); 
         xhttp2.setRequestHeader('Content-type', 'application/x-www-form-urlencoded'); 
         xhttp2.send('degrees=' + degrees); 
+        xhttp2.onreadystatechange = function() {
+          if (this.status == 200) {
+            canSendRequest = true;
+          }
+        };
       });
 
       const btnStatus = document.querySelector('.btn-status');

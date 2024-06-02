@@ -6,8 +6,11 @@
 Servo myservo;
 ESP8266WebServer server(80);
 
-#define TENWIFI "Huu Chin"
-#define PASSWIFI "9999@9999"
+#define lightSensor A0
+#define servoPin D1
+
+#define TENWIFI "Nguyen Cuong"
+#define PASSWIFI "nguyencuong1234"
 
 void connection() {
   String s = MAIN_page;
@@ -15,7 +18,7 @@ void connection() {
 }
 
 void setup() {
-  myservo.attach(D1, 500,2400);
+  myservo.attach(servoPin, 500,2400);
   Serial.begin(9600);
 
   WiFi.begin(TENWIFI, PASSWIFI);
@@ -37,7 +40,7 @@ void setup() {
 
 void handleReadSerial() {
   // Gửi giá trị cảm biến về client
-  float light = analogRead(A0);
+  float light = analogRead(lightSensor);
   server.send(200, "text/plain", "Giá trị cảm biến ánh sáng: " + String(light));
 }
 
