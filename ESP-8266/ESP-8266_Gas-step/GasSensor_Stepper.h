@@ -41,12 +41,12 @@ const char MAIN_page[] PROGMEM = R"=====(
       text-align: center;
     }
     </style>
-    <title>Cảm biến DHT và Dong co buoc</title>
+    <title>Cảm biến khí ga và động cơ bước</title>
   </head>
   <body>
     <h1><p id="serialMonitor"> None </p><h1><br>
       <div id="motor_controller">
-        <p>Điều khiển động cơ Buoc</p>
+        <p>Điều khuyển động cơ bước</p>
         Degrees: <input class="degrees-input" type="text" id="degrees" value="">
         <button class="btn" onclick="sendValue()">Send</button>
       </div>

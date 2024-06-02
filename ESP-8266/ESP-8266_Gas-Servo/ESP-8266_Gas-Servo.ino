@@ -1,13 +1,11 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <Servo.h>
-#include "lightSensor_Servo.h"
+#include "GasSensor_Servo.h"
 
 Servo myservo;
 ESP8266WebServer server(80);
-
-#define lightSensor A0
-#define servoPin D1
+int gasPin = A0;
 
 #define TENWIFI "POCO X3 Pro"
 #define PASSWIFI "11111111"
@@ -18,7 +16,7 @@ void connection() {
 }
 
 void setup() {
-  myservo.attach(servoPin, 500,2400);
+  myservo.attach(D1, 500,2400);
   Serial.begin(9600);
 
   WiFi.begin(TENWIFI, PASSWIFI);
@@ -39,9 +37,10 @@ void setup() {
 }
 
 void handleReadSerial() {
-  // Gửi giá trị cảm biến về client
-  float light = analogRead(lightSensor);
-  server.send(200, "text/plain", "Giá trị cảm biến ánh sáng: " + String(light));
+    // Gửi giá trị cảm biến về client
+    int val = analogRead(gasPin);
+
+    server.send(200, "text/plain", "Giá trị cảm biến gas: " + String(val));
 }
 
 int receivedValue = 0;

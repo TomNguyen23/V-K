@@ -1,13 +1,14 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <Servo.h>
-#include "Servo.h"
+#include "LineSensor_Servo.h"
 
 Servo myservo;
 ESP8266WebServer server(80);
+int linePin = D5;
 
-#define TENWIFI "Khong Co Nha"
-#define PASSWIFI "7777@9999"
+#define TENWIFI "POCO X3 Pro"
+#define PASSWIFI "11111111"
 
 void connection() {
   String s = MAIN_page;
@@ -30,8 +31,15 @@ void setup() {
   Serial.print("Server đã khởi động.");
 
   server.on("/", connection);
+  server.on("/readSerial", handleReadSerial);
   server.on("/sendValue", handleSendValue);
   server.begin();
+}
+
+void handleReadSerial() {
+  // Gửi giá trị cảm biến về client
+    int val = digitalRead(linePin);
+    server.send(200, "text/plain", "Giá trị cảm biến dò line: " + String(val));
 }
 
 int receivedValue = 0;
@@ -41,14 +49,29 @@ void handleSendValue() {
   }
 }
 
+bool isSpined = false;
+int offset = 0;
+
 void loop() {
   // Xử lý các yêu cầu từ client
-  server.handleClient();
-  if (receivedValue > 0) {
-      Serial.println(receivedValue);
-      myservo.write(receivedValue);
-      delay(500); 
+    server.handleClient();
+
+    unsigned long currentMillis = millis();  
+
+    if (receivedValue != 0 && currentMillis % 500 <= 15 && !isSpined) {
+      int degree = receivedValue;
+      if (degree > 0) {
+        degree += offset;
+      } else {
+        degree -= offset;
+      }
+      Serial.println(degree);
+      myservo.write(degree);
+      delay(800);
       myservo.write(0);
-      delay(500); 
-  }
+      delay(800);
+      isSpined = true;
+    } else {
+      isSpined = false;
+    }
 }

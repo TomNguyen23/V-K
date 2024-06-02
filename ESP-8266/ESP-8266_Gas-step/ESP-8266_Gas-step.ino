@@ -1,20 +1,16 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <Stepper.h>
-#include "DHTSensor_Stepper.h"
-#include "DHT.h"
 #include <String.h>
+#include "GasSensor_Stepper.h"
 
 const int stepperRevolution = 2048;
 Stepper myStepper(stepperRevolution, D1, D3, D2, D4);
 ESP8266WebServer server(80);
+int gasPin = A0;
 
-const int DHTPIN = D5;
-const int DHTTYPE = DHT11;
-DHT dht(DHTPIN, DHTTYPE);
-
-#define TENWIFI "Self Device hotspot"
-#define PASSWIFI "toilatoi88"
+#define TENWIFI "POCO X3 Pro"
+#define PASSWIFI "11111111"
 
 int degreeToSteps(int degree) {
   if (degree == 0) return 0;
@@ -49,9 +45,9 @@ void setup() {
 
 void handleReadSerial() {
   // Gửi giá trị cảm biến về client
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
-  server.send(200, "text/plain", "Giá trị cảm biến DHT: " + String(h) + "% | " + String(t) + " deg C");
+    int val = analogRead(gasPin);
+
+    server.send(200, "text/plain", "Giá trị cảm biến gas: " + String(val));
 }
 
 int receivedValue = 0;

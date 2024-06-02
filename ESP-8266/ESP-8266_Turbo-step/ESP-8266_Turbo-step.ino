@@ -1,20 +1,19 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <Stepper.h>
-#include "DHTSensor_Stepper.h"
-#include "DHT.h"
 #include <String.h>
+#include "TurboSensor_Stepper.h"
 
 const int stepperRevolution = 2048;
 Stepper myStepper(stepperRevolution, D1, D3, D2, D4);
 ESP8266WebServer server(80);
+int trigPin = D5;
+int echoPin = D6;
+float duration;
+float distance;
 
-const int DHTPIN = D5;
-const int DHTTYPE = DHT11;
-DHT dht(DHTPIN, DHTTYPE);
-
-#define TENWIFI "Self Device hotspot"
-#define PASSWIFI "toilatoi88"
+#define TENWIFI "POCO X3 Pro"
+#define PASSWIFI "11111111"
 
 int degreeToSteps(int degree) {
   if (degree == 0) return 0;
@@ -27,6 +26,7 @@ void connection() {
 }
 
 void setup() {
+  pinMode(trigPin, OUTPUT);
   myStepper.setSpeed(14);
   Serial.begin(9600);
 
@@ -49,9 +49,19 @@ void setup() {
 
 void handleReadSerial() {
   // Gửi giá trị cảm biến về client
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
-  server.send(200, "text/plain", "Giá trị cảm biến DHT: " + String(h) + "% | " + String(t) + " deg C");
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+
+    duration = pulseIn(echoPin, HIGH);
+
+    distance = duration * 0.034 / 2; 
+    
+    Serial.print("distance: ");
+    Serial.println(distance);
+    server.send(200, "text/plain", "Giá trị cảm biến khoảng cách: " + String(distance) + " cm");
 }
 
 int receivedValue = 0;
@@ -68,26 +78,14 @@ void handleSendValue() {
   }
 }
 
-bool isStepped = false;
-int offset = 0;
-
 void loop() {
+  // Xử lý các yêu cầu từ client
   server.handleClient();
-
-  unsigned long currentMillis = millis();  
-
-  if (receivedValue != 0 && currentMillis % 500 <= 15 && !isStepped) {
-    int degree = receivedValue;
-    if (receivedValue < 0) {
-      degree = receivedValue - offset;
-    }
-    else {
-      degree = receivedValue + offset;
-    }
-    Serial.println(degree);
-    myStepper.step(degreeToSteps(degree));
-    isStepped = true;
-  } else {
-    isStepped = false;
+  if (receivedValue != 0) {
+    Serial.println(receivedValue);
+    myStepper.step(degreeToSteps(receivedValue));
+    delay(200);
+    myStepper.step(degreeToSteps(0));
+    delay(200);
   }
 }

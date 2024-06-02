@@ -41,16 +41,35 @@ const char MAIN_page[] PROGMEM = R"=====(
       text-align: center;
     }
     </style>
-    <title>Điều khiển servo</title>
+    <title>Cảm biến ánh sáng và Stepper</title>
   </head>
   <body>
+    <h1><p id="serialMonitor"> None </p><h1><br>
       <div id="motor_controller">
-        <p>Điều khuyển động cơ Servo</p>
+        <p>Điều khuyển động cơ bước</p>
         Degrees: <input class="degrees-input" type="text" id="degrees" value="">
-        <a href="" class="btn" onclick="sendValue()">Send</a>
+        <button class="btn" onclick="sendValue()">Send</button>
       </div>
 
     <script>
+      window.onload = function() {
+        readSerial();
+      };
+
+      function readSerial() {
+        var serialMonitor = document.getElementById('serialMonitor');
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            serialMonitor.innerHTML = this.responseText;
+            setTimeout(readSerial, 500);
+          }
+        };
+        xhttp.open('GET', 'readSerial', true);
+        xhttp.send();
+      }
+
+      
       function sendValue() { 
         var degreesInput = document.getElementById('degrees'); 
         var xhttp2 = new XMLHttpRequest(); 
