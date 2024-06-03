@@ -77,15 +77,36 @@ void handleSendValue() {
     }
   }
 }
+bool isSpined = false;
+bool isStoped = false;
 
 void loop() {
   // Xử lý các yêu cầu từ client
   server.handleClient();
-  if (receivedValue != 0) {
-    Serial.println(receivedValue);
-    myStepper.step(degreeToSteps(receivedValue));
-    delay(200);
-    myStepper.step(degreeToSteps(0));
-    delay(200);
-  }
+  // if (receivedValue != 0) {
+  //   Serial.println(receivedValue);
+  //   myStepper.step(degreeToSteps(receivedValue));
+  //   delay(200);
+  //   myStepper.step(degreeToSteps(0));
+  //   delay(200);
+  // }
+    unsigned long currentMillis = millis();  
+
+    if (receivedValue != 0 && currentMillis % 500 <= 15 && !isSpined) {
+      if (isStoped) {
+        myStepper.step(degreeToSteps(0));
+        isStoped = false;
+      } else {
+        myStepper.step(degreeToSteps(receivedValue));
+        isStoped = true;
+      }
+      // myStepper.step(degreeToSteps(receivedValue));
+      // delay(800);
+      // myStepper.step(degreeToSteps(0));
+      // delay(800);
+      isSpined = true;
+    } else {
+      isSpined = false;
+    }
+
 }

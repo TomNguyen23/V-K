@@ -12,6 +12,7 @@ void setup() {
 }
 void loop() {
   int val = analogRead(lightPin);
+  Serial.print("Light Sensor Value: ");
   Serial.println(val);
 
   if (val > 200) BTSerial.write('1');

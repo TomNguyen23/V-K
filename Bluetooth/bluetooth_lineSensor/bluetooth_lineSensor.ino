@@ -12,6 +12,7 @@ void setup() {
 }
 void loop() {
   int val = digitalRead(linePin);
+  Serial.print("Line Sensor Value: ");
   Serial.println(val);
 
   if (val == 1) BTSerial.write('1');

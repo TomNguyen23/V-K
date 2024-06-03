@@ -11,6 +11,7 @@ void setup() {
 
 void loop() {
   int val = analogRead(PINO_SGAS);
+  Serial.print("Gas Sensor Value: ");
   Serial.println(val, DEC);
   delay(1000);
 
